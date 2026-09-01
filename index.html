@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitoring Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #bandwidthData {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Network Monitoring Dashboard</h1>
+    <h2>Bandwidth Usage</h2>
+    
+    <!-- Display data as a table -->
+    <div id="bandwidthData"></div>
+
+    <!-- Display graph -->
+    <canvas id="bandwidthChart" width="400" height="200"></canvas>
+
+    <script>
+        // Fetch data from get_usage_log.php
+        fetch('get_usage_log.php')
+            .then(response => response.json())  // Parse JSON data
+            .then(data => {
+                // Display data in a table
+                let tableHTML = '<table>';
+                tableHTML += '<tr><th>Client ID</th><th>Avg Download (Mbps)</th><th>Avg Upload (Mbps)</th><th>Status</th><th>Date</th></tr>';
+                data.forEach(item => {
+                    tableHTML += `<tr>
+                                    <td>${item.client_id}</td>
+                                    <td>${item.avg_download}</td>
+                                    <td>${item.avg_upload}</td>
+                                    <td>${item.bw_status}</td>
+                                    <td>${item.log_datetime}</td>
+                                  </tr>`;
+                });
+                tableHTML += '</table>';
+                document.getElementById('bandwidthData').innerHTML = tableHTML;
+
+                // Prepare data for the graph
+                const labels = data.map(item => item.log_datetime);
+                const downloadData = data.map(item => item.avg_download);
+                const uploadData = data.map(item => item.avg_upload);
+
+                // Create the chart
+                const ctx = document.getElementById('bandwidthChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',  // Line chart
+                    data: {
+                        labels: labels,  // X-axis labels (timestamps)
+                        datasets: [
+                            {
+                                label: 'Avg Download (Mbps)',
+                                borderColor: 'rgb(75, 192, 192)',
+                                data: downloadData,
+                                fill: false
+                            },
+                            {
+                                label: 'Avg Upload (Mbps)',
+                                borderColor: 'rgb(255, 99, 132)',
+                                data: uploadData,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { title: { display: true, text: 'Time' } },
+                            y: { title: { display: true, text: 'Mbps' } }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
+</html>
