@@ -65,14 +65,17 @@ def update_hosts_file(domains):
                 
             new_lines.append(f"{BLOCK_MARKER_START}\n")
             for domain in domains:
-                new_lines.append(f"127.0.0.1 {domain}\n")
-                new_lines.append(f"127.0.0.1 www.{domain}\n")
+                new_lines.append(f"0.0.0.0 {domain}\n")
+                new_lines.append(f"0.0.0.0 www.{domain}\n")
             new_lines.append(f"{BLOCK_MARKER_END}\n")
             
         with open(HOSTS_PATH, 'w') as f:
             f.writelines(new_lines)
             
-        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Hosts file updated. Blocked {len(domains)} domains.")
+        import subprocess
+        subprocess.run(["ipconfig", "/flushdns"], capture_output=True)
+            
+        print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Hosts file updated. Blocked {len(domains)} domains and flushed DNS.")
     except PermissionError:
         print("Permission Denied: You must run this script as Administrator to modify the hosts file.")
         sys.exit(1)

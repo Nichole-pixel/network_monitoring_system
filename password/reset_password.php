@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include('../db.php');
+require_once __DIR__ . '/../includes/config.php';
 
 $error_message = '';
 $success_message = '';

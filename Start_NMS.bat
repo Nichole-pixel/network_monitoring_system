@@ -4,7 +4,7 @@ TITLE NMS Startup Script
 :: Check for Administrator privileges (required to edit the hosts file)
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
 if '%errorlevel%' NEQ '0' (
-    echo Requesting Administrator privileges to run the NMS Client Agent...
+    echo Requesting Administrator privileges to run the NMS System...
     goto UACPrompt
 ) else ( goto gotAdmin )
 
@@ -17,9 +17,16 @@ if '%errorlevel%' NEQ '0' (
     :: Change directory to where this batch file is located
     cd /d "%~dp0"
     
+    echo Starting PHP Web Server on localhost:8000...
+    :: Start PHP server in a minimized window
+    start /min cmd /c "php -S localhost:8000"
+
     echo Starting NMS Client Agent in the background...
     :: Start python agent in a minimized window so it doesn't clutter the screen
     start /min cmd /c "python client_agent.py"
+    
+    :: Give the PHP server a second to boot up before opening the browser
+    timeout /t 2 /nobreak > nul
     
     echo Opening NMS Dashboard in your web browser...
     :: Open the default browser to the localhost dashboard
