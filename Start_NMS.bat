@@ -17,12 +17,12 @@ if '%errorlevel%' NEQ '0' (
     :: Change directory to where this batch file is located
     cd /d "%~dp0"
     
-    echo Starting PHP Web Server on localhost:8000...
+    echo Starting PHP Web Server on port 8000 (LAN accessible)...
     :: Try to use XAMPP's pre-configured PHP if it exists, otherwise fallback to global PHP
     if exist "C:\xampp\php\php.exe" (
-        start /min cmd /c "C:\xampp\php\php.exe -S localhost:8000"
+        start /min cmd /c "C:\xampp\php\php.exe -S 0.0.0.0:8000"
     ) else (
-        start /min cmd /c "php -S localhost:8000"
+        start /min cmd /c "php -S 0.0.0.0:8000"
     )
 
     echo Starting NMS Client Agent in the background...

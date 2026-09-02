@@ -13,7 +13,12 @@ def get_mac_address():
     return mac
 
 # Configuration
-NMS_URL = "http://localhost:8000/api/sync_client.php"
+# For local testing, use 'localhost'. 
+# For real LAN deployment, change this to the IP of the admin server (e.g., '192.168.1.100')
+NMS_SERVER_IP = "localhost" 
+NMS_SERVER_PORT = "8000"
+API_URL = f"http://{NMS_SERVER_IP}:{NMS_SERVER_PORT}/api/sync_client.php"
+
 MAC_ADDRESS = get_mac_address()
 POLL_INTERVAL = 15  # seconds
 
@@ -30,7 +35,7 @@ def is_admin():
 
 def get_blocked_domains():
     try:
-        url = f"{NMS_URL}?mac={MAC_ADDRESS}"
+        url = f"{API_URL}?mac={MAC_ADDRESS}"
         req = urllib.request.Request(url)
         with urllib.request.urlopen(req, timeout=5) as response:
             data = json.loads(response.read().decode())
