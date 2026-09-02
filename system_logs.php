@@ -169,7 +169,7 @@ tr:hover {
 
             <tbody>
             <?php
-            include('db.php');
+            require_once __DIR__ . '/includes/config.php';
             session_start();
 
             if(!isset($_SESSION['user_id'])) {

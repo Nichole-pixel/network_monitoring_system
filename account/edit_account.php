@@ -1,5 +1,5 @@
 <?php
-include('../db.php');  // Include the database connection
+require_once __DIR__ . '/../includes/config.php';  // Include the database connection
 
 if (isset($_GET['id'])) {
     $acc_id = $_GET['id'];

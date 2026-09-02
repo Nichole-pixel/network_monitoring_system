@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../db.php');
+require_once __DIR__ . '/../includes/config.php';
 
 $message = "";
 $mac_address = "";

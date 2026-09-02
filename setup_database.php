@@ -13,15 +13,8 @@ $queries = [
     "CREATE TABLE IF NOT EXISTS client (
         client_id INT AUTO_INCREMENT PRIMARY KEY,
         mac_address VARCHAR(50) NOT NULL,
-        pc_no VARCHAR(50) NOT NULL
-    )",
-    "CREATE TABLE IF NOT EXISTS usage_log (
-        log_id INT AUTO_INCREMENT PRIMARY KEY,
-        client_id INT NOT NULL,
-        ave_download VARCHAR(50),
-        ave_upload VARCHAR(50),
-        bw_status VARCHAR(50),
-        log_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        pc_no VARCHAR(50) NOT NULL,
+        last_seen TIMESTAMP NULL DEFAULT NULL
     )",
     "CREATE TABLE IF NOT EXISTS system_log (
         log_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,18 +37,6 @@ $queries = [
         id INT AUTO_INCREMENT PRIMARY KEY,
         policy_id INT NOT NULL,
         domain VARCHAR(255) NOT NULL
-    )",
-    "CREATE TABLE IF NOT EXISTS bandwidth (
-        bandwidth_id INT AUTO_INCREMENT PRIMARY KEY,
-        max_download VARCHAR(50) NOT NULL,
-        max_upload VARCHAR(50) NOT NULL,
-        bw_status VARCHAR(50) NOT NULL
-    )",
-    "CREATE TABLE IF NOT EXISTS bandwidth_rules (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        client_id INT NOT NULL,
-        bandwidth_id INT NOT NULL,
-        bwrule_status VARCHAR(50) NOT NULL
     )",
     "CREATE TABLE IF NOT EXISTS password_reset_tokens (
         id INT AUTO_INCREMENT PRIMARY KEY,

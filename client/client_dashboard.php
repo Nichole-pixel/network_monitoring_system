@@ -1,8 +1,6 @@
 <?php
 session_start();
-include('../db.php');
-include('../mikrotik_config.php');
-require_once('../routeros_api.class.php');
+require_once __DIR__ . '/../includes/config.php';
 
 function e($value) {
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
@@ -25,26 +23,6 @@ if ($search !== "") {
     $result = $conn->query("SELECT * FROM client");
 }
 
-/* MikroTik */
-$API = new RouterosAPI();
-$mikrotikConnected = false;
-$activeMacs = [];
-
-try {
-    $mikrotikConnected = $API->connect($MT_IP, $MT_USER, $MT_PASS, $MT_PORT);
-    if ($mikrotikConnected) {
-        $API->write('/interface/bridge/host/print');
-        $hosts = $API->read();
-
-        foreach ($hosts as $host) {
-            if (isset($host['mac-address'])) {
-                $activeMacs[strtoupper(trim($host['mac-address']))] = true;
-            }
-        }
-    }
-} catch (Exception $e) {
-    $mikrotikConnected = false;
-}
 ?>
 
 <!DOCTYPE html>
@@ -179,10 +157,6 @@ td{padding:12px;color:#fff;text-align:center;border-bottom:1px solid rgba(255,25
         <a href="add_client.php" class="btn add">+ Add Client</a>
     </div>
 
-    <p style="color:#fff;margin-bottom:10px;">
-        MikroTik: <b><?= $mikrotikConnected ? 'Connected' : 'Disconnected' ?></b>
-    </p>
-
     <table>
         <thead>
             <tr>
@@ -195,19 +169,25 @@ td{padding:12px;color:#fff;text-align:center;border-bottom:1px solid rgba(255,25
 
         <tbody>
         <?php while($row = $result->fetch_assoc()): 
-            $mac = strtoupper(trim($row['mac_address']));
-            $online = isset($activeMacs[$mac]);
+            $is_online = false;
+            if (!empty($row['last_seen'])) {
+                $last_seen_time = strtotime($row['last_seen']);
+                $current_time = time();
+                // If the agent checked in within the last 30 seconds, it is online
+                if (($current_time - $last_seen_time) <= 30) {
+                    $is_online = true;
+                }
+            }
         ?>
         <tr>
             <td><?= e($row['pc_no']) ?></td>
             <td><?= e($row['mac_address']) ?></td>
-            <td class="<?= $online ? 'online' : 'offline' ?>">
-                <?= $online ? 'Online' : 'Offline' ?>
+            <td class="<?= $is_online ? 'online' : 'offline' ?>">
+                <?= $is_online ? 'Online' : 'Offline' ?>
             </td>
             <td>
                 <a href="edit_client.php?id=<?= $row['client_id'] ?>" class="btn edit">Update</a>
                 <a href="delete_client.php?id=<?= $row['client_id'] ?>" class="btn delete deleteBtn">Delete</a>
-                <a href="../usage_log.php?id=<?= $row['client_id'] ?>" class="btn">Logs</a>
             </td>
         </tr>
         <?php endwhile; ?>

@@ -1,5 +1,5 @@
 <?php
-include('db.php');
+require_once __DIR__ . '/includes/config.php';
 
 function normalizeDomain($input) {
     $input = trim(strtolower($input));
