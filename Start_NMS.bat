@@ -9,10 +9,8 @@ if '%errorlevel%' NEQ '0' (
 ) else ( goto gotAdmin )
 
 :UACPrompt
-    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
-    "%temp%\getadmin.vbs"
-    del "%temp%\getadmin.vbs"
+    :: Use PowerShell to request elevation (bypasses Windows Script Host restrictions)
+    powershell -Command "Start-Process '%~s0' -Verb RunAs"
     exit /B
 
 :gotAdmin
