@@ -23,8 +23,6 @@ if ($search !== "") {
     $result = $conn->query("SELECT * FROM client");
 }
 
-}
-
 ?>
 
 <!DOCTYPE html>
