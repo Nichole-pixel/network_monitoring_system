@@ -18,8 +18,12 @@ if '%errorlevel%' NEQ '0' (
     cd /d "%~dp0"
     
     echo Starting PHP Web Server on localhost:8000...
-    :: Start PHP server in a minimized window
-    start /min cmd /c "php -S localhost:8000"
+    :: Try to use XAMPP's pre-configured PHP if it exists, otherwise fallback to global PHP
+    if exist "C:\xampp\php\php.exe" (
+        start /min cmd /c "C:\xampp\php\php.exe -S localhost:8000"
+    ) else (
+        start /min cmd /c "php -S localhost:8000"
+    )
 
     echo Starting NMS Client Agent in the background...
     :: Start python agent in a minimized window so it doesn't clutter the screen
