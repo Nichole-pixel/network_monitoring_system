@@ -1,7 +1,5 @@
 <?php
 include('../db.php');
-include('../mikrotik_config.php');
-require_once('../routeros_api.class.php');
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

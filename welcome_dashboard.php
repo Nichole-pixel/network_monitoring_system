@@ -288,7 +288,7 @@ body::before {
 <!-- SIDEBAR -->
 <div id="sidebar">
     <div class="sidebar-header">
-        <h2>Network Monitoring and Bandwidth Management</h2>
+        <h2>Network Monitoring System</h2>
         <button class="toggle-btn" onclick="toggleSidebar()">
             <i class="fa-solid fa-bars"></i>
         </button>
